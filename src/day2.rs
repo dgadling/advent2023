@@ -34,6 +34,33 @@ fn game_is_valid(raw_line: &str, cube_counts: &HashMap<&str, u8>) -> bool {
     true
 }
 
+fn get_game_power(raw_line: &str) -> u128 {
+    let first_cut: Vec<&str> = raw_line.split(": ").collect();
+
+    let draw_strs: Vec<&str> = first_cut.last().unwrap().split("; ").collect();
+
+    let mut min_seen: HashMap<&str, u8> = HashMap::new();
+
+    for draw in draw_strs {
+        let color_pulls: Vec<&str> = draw.split(", ").collect();
+        for pull in color_pulls {
+            let pull_info: Vec<&str> = pull.split(" ").collect();
+            let count = pull_info.first().unwrap().parse::<u8>().unwrap();
+            let color = pull_info.last().unwrap();
+
+            if min_seen.contains_key(color) {
+                if count > *(min_seen.get(color).unwrap()) {
+                    min_seen.insert(&color, count);
+                }
+            } else {
+                min_seen.insert(&color, count);
+            }
+        }
+    }
+
+    min_seen.values().fold(1 as u128, |acc, e| acc * (*e as u128))
+}
+
 fn day2_part1() {
     let current_dir = current_dir().expect("Can't get current directory?!");
     let in_f_path = current_dir.join("day").join("2").join("input.txt");
@@ -57,7 +84,20 @@ fn day2_part1() {
 }
 
 fn day2_part2() {
-    println!("Day 2, part 2 = ???");
+    let current_dir = current_dir().expect("Can't get current directory?!");
+    let in_f_path = current_dir.join("day").join("2").join("input.txt");
+    let file = File::open(in_f_path.to_str().unwrap())
+        .expect(format!("Really, the path ({:?}) is wrong?", in_f_path).as_str());
+    let buf_reader = BufReader::new(file);
+    let mut our_sum: u128 = 0;
+
+    for _line in buf_reader.lines() {
+        let line = _line.unwrap();
+
+        our_sum += get_game_power(&line);
+    }
+
+    println!("Day 2, part 2 = {}", our_sum);
 }
 
 pub fn day2() {
