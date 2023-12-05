@@ -1,9 +1,6 @@
-use std::{
-    collections::HashMap,
-    env::current_dir,
-    fs::File,
-    io::{BufRead, BufReader},
-};
+use std::{collections::HashMap, io::BufRead};
+
+use crate::utils;
 
 fn get_game_index(raw_line: &str) -> u128 {
     let first_cut: Vec<&str> = raw_line.split(": ").collect();
@@ -58,15 +55,13 @@ fn get_game_power(raw_line: &str) -> u128 {
         }
     }
 
-    min_seen.values().fold(1 as u128, |acc, e| acc * (*e as u128))
+    min_seen
+        .values()
+        .fold(1 as u128, |acc, e| acc * (*e as u128))
 }
 
 fn day2_part1() {
-    let current_dir = current_dir().expect("Can't get current directory?!");
-    let in_f_path = current_dir.join("day").join("2").join("input.txt");
-    let file = File::open(in_f_path.to_str().unwrap())
-        .expect(format!("Really, the path ({:?}) is wrong?", in_f_path).as_str());
-    let buf_reader = BufReader::new(file);
+    let buf_reader = utils::get_reader_for_day(2);
     let mut our_sum: u128 = 0;
 
     let cube_counts: HashMap<&str, u8> = HashMap::from([("red", 12), ("green", 13), ("blue", 14)]);
@@ -84,11 +79,7 @@ fn day2_part1() {
 }
 
 fn day2_part2() {
-    let current_dir = current_dir().expect("Can't get current directory?!");
-    let in_f_path = current_dir.join("day").join("2").join("input.txt");
-    let file = File::open(in_f_path.to_str().unwrap())
-        .expect(format!("Really, the path ({:?}) is wrong?", in_f_path).as_str());
-    let buf_reader = BufReader::new(file);
+    let buf_reader = utils::get_reader_for_day(2);
     let mut our_sum: u128 = 0;
 
     for _line in buf_reader.lines() {

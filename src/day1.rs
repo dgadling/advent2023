@@ -1,15 +1,11 @@
 use std::collections::HashMap;
-use std::env::current_dir;
-use std::fs::File;
-use std::io::{self, BufRead, BufReader, ErrorKind};
+use std::io::{self, BufRead, ErrorKind};
 use std::u128;
 
+use crate::utils;
+
 fn part1() -> Result<u128, io::Error> {
-    let current_dir = current_dir().expect("Can't get current directory?!");
-    let in_f_path = current_dir.join("day").join("1").join("input.txt");
-    let file = File::open(in_f_path.to_str().unwrap())
-        .expect(format!("Really, the path ({:?}) is wrong?", in_f_path).as_str());
-    let buf_reader = BufReader::new(file);
+    let buf_reader = utils::get_reader_for_day(1);
     let mut our_sum: u128 = 0;
 
     for line in buf_reader.lines() {
@@ -27,11 +23,7 @@ fn part1() -> Result<u128, io::Error> {
 }
 
 fn part2() -> Result<u128, io::Error> {
-    let current_dir = current_dir().expect("Can't get current directory?!");
-    let in_f_path = current_dir.join("day").join("1").join("input.txt");
-    let file = File::open(in_f_path.to_str().unwrap())
-        .expect(format!("Really, the path ({:?}) is wrong?", in_f_path).as_str());
-    let buf_reader = BufReader::new(file);
+    let buf_reader = utils::get_reader_for_day(1);
     let mut our_sum: u128 = 0;
     let digits: HashMap<&str, u8> = HashMap::from([
         ("one", 1),
