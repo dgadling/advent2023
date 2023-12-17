@@ -1,12 +1,11 @@
 use crate::utils;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::io::BufRead;
 
 #[derive(Debug)]
 struct Card {
-    num: u16,
-    winners: HashSet<u16>,
-    ours: Vec<u16>,
+    num: usize,
+    num_matches: usize,
 }
 
 impl Card {
@@ -18,7 +17,7 @@ impl Card {
             .split(" ")
             .last()
             .unwrap()
-            .parse::<u16>()
+            .parse::<usize>()
             .unwrap();
 
         let cut_2: Vec<&str> = cut_1.last().unwrap().split("|").collect();
@@ -37,23 +36,20 @@ impl Card {
             .map(|n| n.parse::<u16>().unwrap())
             .collect();
 
+        let num_matches = ours
+            .iter()
+            .filter(|x| winners.contains(x))
+            .collect::<Vec<&u16>>()
+            .len();
+
         Card {
             num: card_num,
-            winners: winners,
-            ours: ours,
+            num_matches,
         }
     }
 
-    fn num_matches(&self) -> usize {
-        self
-            .ours
-            .iter()
-            .filter(|x| self.winners.contains(x))
-            .collect::<Vec<&u16>>().len()
-    }
-
     fn value(&self) -> u128 {
-        let matches = self.num_matches();
+        let matches = self.num_matches;
 
         if matches > 0 {
             1 << (matches - 1)
@@ -79,6 +75,35 @@ fn day4_part1() {
     println!("Day 4, part 1 = {}", our_sum);
 }
 
+fn day4_part2() {
+    let cards = get_cards();
+
+    // card number and how many copies we have
+    let mut num_copies: HashMap<usize, usize> = HashMap::new();
+    let mut copies_to_add;
+
+    for curr_card in cards.iter() {
+        // Put the original in the stack. There may have already been some.
+        *num_copies.entry(curr_card.num).or_insert(0) += 1;
+        copies_to_add = num_copies.get(&curr_card.num).cloned().unwrap();
+
+        if curr_card.num_matches == 0 {
+            // No matches, so we don't get any additional copies
+            continue;
+        }
+
+        // We have at least one copy of the current card, but possibly more.
+        // To avoid nested loops, just add the current number of copies as the
+        // number of copies for each of the next cards.
+        for offset in 1..=curr_card.num_matches {
+            *num_copies.entry(curr_card.num + offset).or_insert(0) += copies_to_add;
+        }
+    }
+
+    println!("Day 4, part 2 = {}", num_copies.values().sum::<usize>());
+}
+
 pub fn day4() {
     day4_part1();
+    day4_part2();
 }
