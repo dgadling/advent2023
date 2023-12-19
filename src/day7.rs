@@ -1,8 +1,6 @@
 use std::cmp::Ordering;
 use std::{collections::HashMap, io::BufRead};
 
-use crate::utils::get_reader_for_day;
-
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 enum HandKind {
     High = 1,
@@ -19,10 +17,19 @@ struct Hand {
     cards: String,
     bid: u32,
     kind: HandKind,
+    jokers: bool,
 }
 
 impl Hand {
     pub fn new(line: String) -> Self {
+        Self::_new(line, false)
+    }
+
+    pub fn new_with_jokers(line: String) -> Self {
+        Self::_new(line, true)
+    }
+
+    fn _new(line: String, jokers: bool) -> Self {
         let parts: Vec<&str> = line.trim_end().split(" ").collect();
         let cards = parts.first().unwrap();
         let bid = parts.last().unwrap();
@@ -30,13 +37,14 @@ impl Hand {
         Hand {
             cards: cards.to_string(),
             bid: bid.parse::<u32>().unwrap(),
-            kind: Hand::get_hand_kind(cards),
+            kind: Hand::get_hand_kind(cards, jokers),
+            jokers,
         }
     }
 
-    fn get_hand_kind(cards: &str) -> HandKind {
+    fn get_hand_kind(cards: &str, jokers: bool) -> HandKind {
         /*
-         Apparently we have to do this by:
+         No native collections.Counter like in Python, so:
            1. Generate the counts in a HashMap
            2. Turn the HashMap into a Vec of tuples of (count, card)
            3. Sort the Vec
@@ -46,27 +54,58 @@ impl Hand {
             *card_count.entry(card).or_insert(0) += 1;
         }
 
-        let mut count_by_card: Vec<(&u8, &char)> = card_count.iter().map(|(k, v)| (v, k)).collect();
+        let mut count_by_card: Vec<(u8, &char)> = card_count.iter().map(|(k, v)| (*v, k)).collect();
+
+        let num_jokers = *card_count.get(&'J').unwrap_or(&0_u8);
+
         // Default sort is *ascending*, so largest at the end. Convenient!
         count_by_card.sort();
 
-        let most_frequent = *count_by_card.pop().unwrap().0;
-        if most_frequent == 5 {
+        if count_by_card.first().unwrap().0 == 5 {
             return HandKind::Five;
         }
 
-        // Since all 5 cards weren't the same there *will* be a second most frequent
-        let second_most_frequent = *count_by_card.pop().unwrap().0;
+        let most_frequent = count_by_card.pop().unwrap();
+        let second_most_frequent = count_by_card.pop().unwrap();
+        let jokes_first = most_frequent.1 == &'J';
+        let jokes_second = second_most_frequent.1 == &'J';
 
-        // We can figure these out with just the most frequent card
-        match most_frequent {
-            4 => return HandKind::Four,
-            3 if second_most_frequent == 2 => return HandKind::House,
-            3 => return HandKind::Three,
-            2 if second_most_frequent == 2 => return HandKind::TwoPair,
-            2 => return HandKind::Pair,
-            1 => return HandKind::High,
-            0_u8 | 5_u8..=u8::MAX => panic!("Wrong number of cards entirely!"),
+        if !jokers {
+            match most_frequent.0 {
+                4 => return HandKind::Four,
+                3 if second_most_frequent.0 == 2 => return HandKind::House,
+                3 => return HandKind::Three,
+                2 if second_most_frequent.0 == 2 => return HandKind::TwoPair,
+                2 => return HandKind::Pair,
+                1 => return HandKind::High,
+                0_u8 | 5_u8..=u8::MAX => panic!("Wrong number of cards entirely!"),
+            }
+        } else {
+            match most_frequent.0 {
+                4 if jokes_first => return HandKind::Five,
+                4 if num_jokers == 1 => return HandKind::Five,
+                4 => return HandKind::Four,
+
+                3 if jokes_first && second_most_frequent.0 == 2 => return HandKind::Five,
+                3 if num_jokers == 2 => return HandKind::Five,
+                3 if jokes_first => return HandKind::Four,
+                3 if num_jokers == 1 => return HandKind::Four,
+                3 if second_most_frequent.0 == 2 => return HandKind::House,
+                3 => return HandKind::Three,
+
+                2 if jokes_first && second_most_frequent.0 == 2 => return HandKind::Four,
+                2 if num_jokers == 2 && jokes_second => return HandKind::Four,
+                2 if second_most_frequent.0 == 2 && num_jokers == 1 => return HandKind::House,
+                2 if jokes_first && second_most_frequent.0 == 1 => return HandKind::Three,
+                2 if num_jokers == 1 => return HandKind::Three,
+                2 if second_most_frequent.0 == 2 => return HandKind::TwoPair,
+                2 => return HandKind::Pair,
+
+                1 if num_jokers == 1 => return HandKind::Pair,
+                1 => return HandKind::High,
+
+                0_u8 | 5_u8..=u8::MAX => panic!("Wrong number of cards entirely!"),
+            }
         }
     }
 }
@@ -89,9 +128,16 @@ impl PartialOrd for Hand {
         let their_cards: Vec<char> = other.cards.chars().collect();
         let (mut our_card_strength, mut their_card_strength): (u32, u32);
 
+        assert!(
+            self.jokers == other.jokers,
+            "Can't compare a hands with different joker states!"
+        );
+
+        let all_jokes = self.jokers;
+
         for i in 0..5 {
-            our_card_strength = strength_of_card(our_cards.get(i).unwrap()).unwrap();
-            their_card_strength = strength_of_card(their_cards.get(i).unwrap()).unwrap();
+            our_card_strength = strength_of_card(our_cards.get(i).unwrap(), all_jokes).unwrap();
+            their_card_strength = strength_of_card(their_cards.get(i).unwrap(), all_jokes).unwrap();
 
             if our_card_strength == their_card_strength {
                 continue;
@@ -114,7 +160,7 @@ impl Ord for Hand {
     }
 }
 
-const fn strength_of_card(c: &char) -> Option<u32> {
+const fn strength_of_card(c: &char, jokers: bool) -> Option<u32> {
     let num = c.to_digit(10);
 
     if num.is_some() {
@@ -123,6 +169,7 @@ const fn strength_of_card(c: &char) -> Option<u32> {
 
     match c {
         'T' => Some(10),
+        'J' if jokers => Some(1),
         'J' => Some(11),
         'Q' => Some(12),
         'K' => Some(13),
@@ -131,19 +178,33 @@ const fn strength_of_card(c: &char) -> Option<u32> {
     }
 }
 
-fn get_hands() -> Vec<Hand> {
-    let r = get_reader_for_day(7);
-
-    r.lines().map(|l| Hand::new(l.unwrap())).collect()
-}
-
 pub fn day7() {
     day7_part1();
-    // day7_part2();
+    day7_part2();
 }
 
 fn day7_part1() {
-    let mut hands = get_hands();
+    let r = crate::utils::get_reader_for_day(7);
+
+    let mut hands: Vec<Hand> = r.lines().map(|l| Hand::new(l.unwrap())).collect();
+    hands.sort();
+
+    let winnings: u32 = hands
+        .iter()
+        .enumerate()
+        .map(|(idx, h)| h.bid * (idx + 1) as u32)
+        .sum();
+
+    println!("We win {}", winnings);
+}
+
+fn day7_part2() {
+    let r = crate::utils::get_reader_for_day(7);
+
+    let mut hands: Vec<Hand> = r
+        .lines()
+        .map(|l| Hand::new_with_jokers(l.unwrap()))
+        .collect();
     hands.sort();
 
     let winnings: u32 = hands
