@@ -195,7 +195,7 @@ fn day7_part1() {
         .map(|(idx, h)| h.bid * (idx + 1) as u32)
         .sum();
 
-    println!("We win {}", winnings);
+    println!("Day  7, part 1 = {}", winnings);
 }
 
 fn day7_part2() {
@@ -213,5 +213,5 @@ fn day7_part2() {
         .map(|(idx, h)| h.bid * (idx + 1) as u32)
         .sum();
 
-    println!("We win {}", winnings);
+    println!("Day  7, part 2 = {}", winnings);
 }

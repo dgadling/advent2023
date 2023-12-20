@@ -75,7 +75,7 @@ fn day2_part1() {
         }
     }
 
-    println!("Day 2, part 1 = {}", our_sum);
+    println!("Day  2, part 1 = {}", our_sum);
 }
 
 fn day2_part2() {
@@ -88,7 +88,7 @@ fn day2_part2() {
         our_sum += get_game_power(&line);
     }
 
-    println!("Day 2, part 2 = {}", our_sum);
+    println!("Day  2, part 2 = {}", our_sum);
 }
 
 pub fn day2() {

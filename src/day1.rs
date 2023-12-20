@@ -90,7 +90,7 @@ pub fn day1() {
     let part1_result = part1();
     match part1_result {
         Ok(total) => {
-            println!("Part 1 total is {}", total)
+            println!("Day  1, part 1 = {}", total)
         }
         Err(error) => panic!("Oh jeeze: {:?}", error),
     }
@@ -98,7 +98,7 @@ pub fn day1() {
     let part2_result = part2();
     match part2_result {
         Ok(total) => {
-            println!("Part 2 total is {}", total)
+            println!("Day  1, part 2 = {}", total)
         }
         Err(error) => panic!("Oh jeeze: {:?}", error),
     }

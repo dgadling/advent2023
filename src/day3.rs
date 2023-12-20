@@ -142,7 +142,7 @@ fn day3_part2() {
         our_sum += sym.get_gear_ratio(&nums);
     }
 
-    println!("Day 3, part 2 = {}", our_sum);
+    println!("Day  3, part 2 = {}", our_sum);
     // 81296995
 }
 
@@ -156,7 +156,7 @@ fn day3_part1() {
             our_sum += num.number as u128;
         }
     }
-    println!("Day 3, part 1 = {}", our_sum);
+    println!("Day  3, part 1 = {}", our_sum);
 }
 
 pub fn day3() {

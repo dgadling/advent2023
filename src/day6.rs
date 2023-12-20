@@ -103,7 +103,6 @@ fn sneaky_ways_to_win(r: &Race) -> u128 {
     }
 
     let ways_to_win = max_to_win - min_to_win + 1;
-    println!("For {:?} have {}", r, ways_to_win);
     ways_to_win as u128
 }
 
@@ -116,12 +115,12 @@ fn day6_part1() {
         .reduce(|acc, e| acc * e)
         .unwrap();
 
-    println!("Margin = {}", margin);
+    println!("Day  6, part 1 = {}", margin);
 }
 
 fn day6_part2() {
     println!(
-        "Ways to win = {}",
+        "Day  6, part 2 = {}",
         sneaky_ways_to_win(&Race {
             max_time: 56717999,
             max_dist: 334113513502430

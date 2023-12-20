@@ -69,7 +69,7 @@ fn day8_part1() {
         step_idx += 1;
     }
 
-    println!("Took {} steps", steps_taken);
+    println!("Day  8, part 1 = {}", steps_taken);
 }
 
 /*
@@ -156,7 +156,7 @@ fn day8_part2() {
         }
     }
 
-    println!("They'll sync after {} steps", lcm(&ghost_steps));
+    println!("Day  8, part 2 = {}", lcm(&ghost_steps));
 }
 
 pub fn day8() {

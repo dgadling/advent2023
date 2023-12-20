@@ -96,7 +96,7 @@ fn day5_part1() {
 
     map_seeds(&mut seeds, &maps);
 
-    println!("Lowest location = {:?}", seeds.iter().min().unwrap());
+    println!("Day  5, part 2 = {:?}", seeds.iter().min().unwrap());
 }
 
 fn day5_part2() {
@@ -127,7 +127,7 @@ fn day5_part2() {
                         // Everything in the seed range after this mapping row gets pushed back in for further processing
                         ranges.push(overlap_end..range.end);
                     }
-                    
+
                     continue 'next_range;
                 }
             }
@@ -139,9 +139,9 @@ fn day5_part2() {
         ranges = new_ranges;
     }
 
-    ranges.sort_by(|a,b| a.start.cmp(&b.start));
+    ranges.sort_by(|a, b| a.start.cmp(&b.start));
 
-    println!("Lowest location = {:?}", ranges.first().unwrap().start);
+    println!("Day  5, part 2 = {:?}", ranges.first().unwrap().start);
 }
 
 pub fn day5() {

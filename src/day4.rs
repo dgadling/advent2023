@@ -64,7 +64,7 @@ fn day4_part1() {
     let cards = get_cards();
     let our_sum: u128 = cards.iter().map(|c| c.value()).sum();
 
-    println!("Day 4, part 1 = {}", our_sum);
+    println!("Day  4, part 1 = {}", our_sum);
 }
 
 fn day4_part2() {
@@ -92,7 +92,7 @@ fn day4_part2() {
         }
     }
 
-    println!("Day 4, part 2 = {}", num_copies.values().sum::<usize>());
+    println!("Day  4, part 2 = {}", num_copies.values().sum::<usize>());
 }
 
 pub fn day4() {
