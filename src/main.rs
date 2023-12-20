@@ -7,6 +7,7 @@ pub mod day4;
 pub mod day5;
 pub mod day6;
 pub mod day7;
+pub mod day8;
 
 fn main() {
     // day1::day1();
@@ -15,5 +16,6 @@ fn main() {
     // day4::day4();
     // day5::day5();
     // day6::day6();
-    day7::day7();
+    // day7::day7();
+    day8::day8();
 }
