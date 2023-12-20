@@ -8,19 +8,12 @@ pub fn day9() {
 fn day9_part1() {
     let r = crate::utils::get_reader_for_day(9);
 
-    let mut curr_nums: Vec<i128>;
-    let mut final_nums: Vec<i128> = Vec::new();
+    let answer: i128 = r
+        .lines()
+        .map(|l| get_last_num(crate::utils::ints(l.unwrap())))
+        .sum();
 
-    for line in r.lines().map(|l| l.unwrap()) {
-        curr_nums = line
-            .split_ascii_whitespace()
-            .map(|c| c.parse::<i128>().unwrap())
-            .collect();
-
-        final_nums.push(get_last_num(curr_nums));
-    }
-
-    println!("Sum = {}", final_nums.iter().sum::<i128>());
+    println!("Day  9, part 1 = {}", answer);
 }
 
 fn get_last_num(nums: Vec<i128>) -> i128 {
@@ -39,21 +32,12 @@ fn get_last_num(nums: Vec<i128>) -> i128 {
 fn day9_part2() {
     let r = crate::utils::get_reader_for_day(9);
 
-    let mut curr_nums: Vec<i128>;
-    let mut first_nums: Vec<i128> = Vec::new();
-    let mut first_num: i128;
+    let answer: i128 = r
+        .lines()
+        .map(|l| get_first_num(crate::utils::ints(l.unwrap())))
+        .sum();
 
-    for line in r.lines().map(|l| l.unwrap()) {
-        curr_nums = line
-            .split_ascii_whitespace()
-            .map(|c| c.parse::<i128>().unwrap())
-            .collect();
-
-        first_num = get_first_num(curr_nums);
-        first_nums.push(first_num);
-    }
-
-    println!("Sum = {}", first_nums.iter().sum::<i128>());
+    println!("Day  9, part 2 = {}", answer);
 }
 
 fn get_first_num(nums: Vec<i128>) -> i128 {
