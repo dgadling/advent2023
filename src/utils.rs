@@ -1,4 +1,5 @@
-use std::{env::current_dir, fs::File, io::BufReader};
+use std::{env::current_dir, fs::File, io::BufReader, str::FromStr, fmt::Debug};
+
 
 pub fn get_reader_for_day(day: u8) -> BufReader<File> {
     get_reader(format!("day-{}.txt", day))
@@ -15,4 +16,10 @@ fn get_reader(file_name: String) -> BufReader<File> {
         .expect(format!("Really, the path ({:?}) is wrong?", in_f_path).as_str());
 
     BufReader::new(file)
+}
+
+pub fn ints<T: FromStr>(line: String) -> Vec<T> where <T as FromStr>::Err: Debug {
+    line.split_ascii_whitespace()
+        .map(|c| c.parse::<T>().unwrap())
+        .collect()
 }

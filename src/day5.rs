@@ -16,13 +16,7 @@ fn get_seeds() -> Vec<i128> {
         .read_line(&mut seed_line)
         .expect("First line isn't seeds?!");
 
-    seed_line
-        .split(":")
-        .last()
-        .unwrap()
-        .split_whitespace()
-        .map(|n| n.parse::<i128>().unwrap())
-        .collect()
+    crate::utils::ints::<i128>(seed_line.split(":").last().unwrap().to_string())
 }
 
 fn get_maps() -> Vec<Vec<SeedMapRow>> {
@@ -49,10 +43,7 @@ fn get_maps() -> Vec<Vec<SeedMapRow>> {
             continue;
         }
 
-        let line_parts: Vec<i128> = line
-            .split_whitespace()
-            .map(|n| n.parse::<i128>().unwrap())
-            .collect();
+        let line_parts: Vec<i128> = crate::utils::ints(line);
 
         let dest = *line_parts.get(0).unwrap();
         let src = *line_parts.get(1).unwrap();

@@ -22,19 +22,11 @@ impl Card {
 
         let cut_2: Vec<&str> = cut_1.last().unwrap().split("|").collect();
 
-        let winners: HashSet<u16> = HashSet::from_iter(
-            cut_2
-                .first()
-                .unwrap()
-                .split_whitespace()
-                .map(|n| n.parse::<u16>().unwrap()),
+        let winners: HashSet<_> = HashSet::from_iter(
+            crate::utils::ints::<u16>(cut_2.first().unwrap().to_string()).into_iter(),
         );
-        let ours: Vec<u16> = cut_2
-            .last()
-            .unwrap()
-            .split_whitespace()
-            .map(|n| n.parse::<u16>().unwrap())
-            .collect();
+
+        let ours: Vec<u16> = crate::utils::ints::<u16>(cut_2.last().unwrap().to_string());
 
         let num_matches = ours
             .iter()
