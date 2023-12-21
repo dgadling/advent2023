@@ -1,19 +1,16 @@
-use std::io::BufRead;
+const DAY: u8 = 9;
 
-pub fn day9() {
-    day9_part1();
-    day9_part2();
+pub fn main() {
+    part1();
+    part2();
 }
 
-fn day9_part1() {
-    let r = crate::utils::get_reader_for_day(9);
-
-    let answer: i128 = r
-        .lines()
-        .map(|l| get_last_num(crate::utils::ints(l.unwrap())))
+fn part1() {
+    let answer: i128 = crate::utils::lines(DAY)
+        .map(|l| get_last_num(crate::utils::ints(l)))
         .sum();
 
-    println!("Day  9, part 1 = {}", answer);
+    done!(DAY, 1, answer);
 }
 
 fn get_last_num(nums: Vec<i128>) -> i128 {
@@ -29,15 +26,12 @@ fn get_last_num(nums: Vec<i128>) -> i128 {
         );
 }
 
-fn day9_part2() {
-    let r = crate::utils::get_reader_for_day(9);
-
-    let answer: i128 = r
-        .lines()
-        .map(|l| get_first_num(crate::utils::ints(l.unwrap())))
+fn part2() {
+    let answer: i128 = crate::utils::lines(DAY)
+        .map(|l| get_first_num(crate::utils::ints(l)))
         .sum();
 
-    println!("Day  9, part 2 = {}", answer);
+    done!(DAY, 2, answer);
 }
 
 fn get_first_num(nums: Vec<i128>) -> i128 {

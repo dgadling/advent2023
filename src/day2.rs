@@ -1,6 +1,11 @@
-use std::{collections::HashMap, io::BufRead};
+const DAY: u8 = 2;
 
-use crate::utils;
+pub fn main() {
+    part1();
+    part2();
+}
+
+use std::collections::HashMap;
 
 fn get_game_index(raw_line: &str) -> u128 {
     let first_cut: Vec<&str> = raw_line.split(": ").collect();
@@ -60,38 +65,22 @@ fn get_game_power(raw_line: &str) -> u128 {
         .fold(1 as u128, |acc, e| acc * (*e as u128))
 }
 
-fn day2_part1() {
-    let buf_reader = utils::get_reader_for_day(2);
-    let mut our_sum: u128 = 0;
-
+fn part1() {
     let cube_counts: HashMap<&str, u8> = HashMap::from([("red", 12), ("green", 13), ("blue", 14)]);
 
-    for _line in buf_reader.lines() {
-        let line = _line.unwrap();
-        let game_idx = get_game_index(&line);
-
-        if game_is_valid(&line, &cube_counts) {
-            our_sum += game_idx;
+    let our_sum = crate::utils::lines(DAY).fold(0, |acc, l| {
+        acc + if game_is_valid(&l, &cube_counts) {
+            get_game_index(&l)
+        } else {
+            0
         }
-    }
+    });
 
-    println!("Day  2, part 1 = {}", our_sum);
+    done!(DAY, 1, our_sum);
 }
 
-fn day2_part2() {
-    let buf_reader = utils::get_reader_for_day(2);
-    let mut our_sum: u128 = 0;
+fn part2() {
+    let our_sum = crate::utils::lines(DAY).fold(0, |acc, l| acc + get_game_power(&l));
 
-    for _line in buf_reader.lines() {
-        let line = _line.unwrap();
-
-        our_sum += get_game_power(&line);
-    }
-
-    println!("Day  2, part 2 = {}", our_sum);
-}
-
-pub fn day2() {
-    day2_part1();
-    day2_part2();
+    done!(DAY, 2, our_sum);
 }

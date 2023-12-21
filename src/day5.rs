@@ -1,3 +1,10 @@
+const DAY: u8 = 5;
+
+pub fn main() {
+    part1();
+    part2();
+}
+
 use crate::utils;
 use std::{io::BufRead, ops::Range};
 
@@ -20,15 +27,10 @@ fn get_seeds() -> Vec<i128> {
 }
 
 fn get_maps() -> Vec<Vec<SeedMapRow>> {
-    let reader = utils::get_reader_for_day(5);
-
     let mut all_maps: Vec<Vec<SeedMapRow>> = Vec::new();
-    let mut line;
     let mut curr_map: Vec<SeedMapRow> = Vec::new();
 
-    for raw_line in reader.lines() {
-        line = raw_line.unwrap();
-
+    for line in crate::utils::lines(DAY) {
         if line.is_empty() {
             if !curr_map.is_empty() {
                 curr_map.sort_by(|a, b| a.source_start.cmp(&b.source_start));
@@ -90,16 +92,16 @@ fn get_ranges() -> Vec<Range<i128>> {
     ranges
 }
 
-fn day5_part1() {
+fn part1() {
     let mut seeds = get_seeds();
     let maps = get_maps();
 
     map_seeds(&mut seeds, &maps);
 
-    println!("Day  5, part 2 = {:?}", seeds.iter().min().unwrap());
+    done!(DAY, 1, seeds.iter().min().unwrap());
 }
 
-fn day5_part2() {
+fn part2() {
     let maps = get_maps();
     let mut ranges = get_ranges();
     let mut range: Range<i128>;
@@ -141,10 +143,5 @@ fn day5_part2() {
 
     ranges.sort_by(|a, b| a.start.cmp(&b.start));
 
-    println!("Day  5, part 2 = {:?}", ranges.first().unwrap().start);
-}
-
-pub fn day5() {
-    day5_part1();
-    day5_part2();
+    done!(DAY, 2, ranges.first().unwrap().start);
 }

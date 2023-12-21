@@ -1,29 +1,25 @@
-use std::collections::HashMap;
-use std::io::{self, BufRead, ErrorKind};
-use std::u128;
+const DAY: u8 = 1;
 
-use crate::utils;
-
-fn part1() -> Result<u128, io::Error> {
-    let buf_reader = utils::get_reader_for_day(1);
-    let mut our_sum: u128 = 0;
-
-    for line in buf_reader.lines() {
-        let numbers: Vec<u32> = line?.chars().filter_map(|a| a.to_digit(10)).collect();
-        let first_digit = numbers
-            .first()
-            .ok_or(io::Error::new(ErrorKind::Other, "No first digit?!"))?;
-        let last_digit = numbers
-            .last()
-            .ok_or(io::Error::new(ErrorKind::Other, "No last digit?!"))?;
-        our_sum += (first_digit * 10) as u128 + (*last_digit as u128);
-    }
-
-    return Ok(our_sum);
+pub fn main() {
+    part1();
+    part2();
 }
 
-fn part2() -> Result<u128, io::Error> {
-    let buf_reader = utils::get_reader_for_day(1);
+use std::collections::HashMap;
+use std::u128;
+
+fn part1() {
+    let mut our_sum: u128 = 0;
+
+    for line in crate::utils::lines(DAY) {
+        let numbers: Vec<u32> = line.chars().filter_map(|a| a.to_digit(10)).collect();
+        our_sum += (numbers.first().unwrap() * 10) as u128 + (*numbers.last().unwrap() as u128);
+    }
+
+    done!(DAY, 1, our_sum);
+}
+
+fn part2() {
     let mut our_sum: u128 = 0;
     let digits: HashMap<&str, u8> = HashMap::from([
         ("one", 1),
@@ -51,13 +47,12 @@ fn part2() -> Result<u128, io::Error> {
     let mut last_digit_idx: usize;
     let mut last_digit: &u8;
 
-    for _line in buf_reader.lines() {
+    for line in crate::utils::lines(DAY){
         first_digit_idx = usize::MAX;
         first_digit = &0;
         last_digit_idx = 0;
         last_digit = &0;
 
-        let line = _line.unwrap();
         for digit in digits.keys() {
             if let Some(idx) = line.find(digit) {
                 if idx < first_digit_idx {
@@ -83,23 +78,5 @@ fn part2() -> Result<u128, io::Error> {
         our_sum += ((first_digit * 10) + *last_digit) as u128;
     }
 
-    return Ok(our_sum);
-}
-
-pub fn day1() {
-    let part1_result = part1();
-    match part1_result {
-        Ok(total) => {
-            println!("Day  1, part 1 = {}", total)
-        }
-        Err(error) => panic!("Oh jeeze: {:?}", error),
-    }
-
-    let part2_result = part2();
-    match part2_result {
-        Ok(total) => {
-            println!("Day  1, part 2 = {}", total)
-        }
-        Err(error) => panic!("Oh jeeze: {:?}", error),
-    }
+    done!(DAY, 2, our_sum);
 }

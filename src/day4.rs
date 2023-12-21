@@ -1,6 +1,11 @@
-use crate::utils;
+const DAY: u8 = 4;
+
+pub fn main() {
+    part1();
+    part2();
+}
+
 use std::collections::{HashMap, HashSet};
-use std::io::BufRead;
 
 #[derive(Debug)]
 struct Card {
@@ -52,22 +57,19 @@ impl Card {
 }
 
 fn get_cards() -> Vec<Card> {
-    let reader = utils::get_reader_for_day(4);
-
-    reader
-        .lines()
-        .map(|l| Card::from_input(l.unwrap()))
+    crate::utils::lines(DAY)
+        .map(|l| Card::from_input(l))
         .collect()
 }
 
-fn day4_part1() {
+fn part1() {
     let cards = get_cards();
     let our_sum: u128 = cards.iter().map(|c| c.value()).sum();
 
-    println!("Day  4, part 1 = {}", our_sum);
+    done!(DAY, 1, our_sum);
 }
 
-fn day4_part2() {
+fn part2() {
     let cards = get_cards();
 
     // card number and how many copies we have
@@ -92,10 +94,5 @@ fn day4_part2() {
         }
     }
 
-    println!("Day  4, part 2 = {}", num_copies.values().sum::<usize>());
-}
-
-pub fn day4() {
-    day4_part1();
-    day4_part2();
+    done!(DAY, 2, num_copies.values().sum::<usize>());
 }

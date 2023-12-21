@@ -1,4 +1,11 @@
-use std::{collections::HashMap, io::BufRead};
+const DAY: u8 = 8;
+
+pub fn main() {
+    part1();
+    part2();
+}
+
+use std::collections::HashMap;
 
 type Label = String;
 
@@ -9,11 +16,10 @@ struct Node {
 }
 
 fn get_directions_and_graph() -> (String, HashMap<Label, Node>) {
-    let r = crate::utils::get_reader_for_day(8);
     let mut directions = String::new();
     let mut graph: HashMap<Label, Node> = HashMap::new();
 
-    for line in r.lines().map(|l| l.unwrap()) {
+    for line in crate::utils::lines(DAY) {
         if line.is_empty() {
             continue;
         }
@@ -42,7 +48,7 @@ fn get_directions_and_graph() -> (String, HashMap<Label, Node>) {
     (directions, graph)
 }
 
-fn day8_part1() {
+fn part1() {
     let (directions, graph) = get_directions_and_graph();
 
     let steps: Vec<char> = directions.chars().collect();
@@ -69,7 +75,7 @@ fn day8_part1() {
         step_idx += 1;
     }
 
-    println!("Day  8, part 1 = {}", steps_taken);
+    done!(DAY, 1, steps_taken);
 }
 
 /*
@@ -95,7 +101,7 @@ fn gcd_of_two_numbers(a: u128, b: u128) -> u128 {
   }}}
 */
 
-fn day8_part2() {
+fn part2() {
     /*
       This is inspired from the insights in this Medium post
       https://medium.com/@matthias.vombruch/how-to-really-solve-the-advent-of-code-2023-challenge-day-8-part-2-spoiler-646e0b7c440d
@@ -156,10 +162,5 @@ fn day8_part2() {
         }
     }
 
-    println!("Day  8, part 2 = {}", lcm(&ghost_steps));
-}
-
-pub fn day8() {
-    day8_part1();
-    day8_part2();
+    done!(DAY, 2, lcm(&ghost_steps));
 }

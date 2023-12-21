@@ -1,5 +1,12 @@
+const DAY: u8 = 7;
+
+pub fn main() {
+    part1();
+    part2();
+}
+
 use std::cmp::Ordering;
-use std::{collections::HashMap, io::BufRead};
+use std::collections::HashMap;
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 enum HandKind {
@@ -178,15 +185,8 @@ const fn strength_of_card(c: &char, jokers: bool) -> Option<u32> {
     }
 }
 
-pub fn day7() {
-    day7_part1();
-    day7_part2();
-}
-
-fn day7_part1() {
-    let r = crate::utils::get_reader_for_day(7);
-
-    let mut hands: Vec<Hand> = r.lines().map(|l| Hand::new(l.unwrap())).collect();
+fn part1() {
+    let mut hands: Vec<Hand> = crate::utils::lines(DAY).map(|l| Hand::new(l)).collect();
     hands.sort();
 
     let winnings: u32 = hands
@@ -195,15 +195,12 @@ fn day7_part1() {
         .map(|(idx, h)| h.bid * (idx + 1) as u32)
         .sum();
 
-    println!("Day  7, part 1 = {}", winnings);
+    done!(DAY, 1, winnings);
 }
 
-fn day7_part2() {
-    let r = crate::utils::get_reader_for_day(7);
-
-    let mut hands: Vec<Hand> = r
-        .lines()
-        .map(|l| Hand::new_with_jokers(l.unwrap()))
+fn part2() {
+    let mut hands: Vec<Hand> = crate::utils::lines(DAY)
+        .map(|l| Hand::new_with_jokers(l))
         .collect();
     hands.sort();
 
@@ -213,5 +210,5 @@ fn day7_part2() {
         .map(|(idx, h)| h.bid * (idx + 1) as u32)
         .sum();
 
-    println!("Day  7, part 2 = {}", winnings);
+    done!(DAY, 2, winnings);
 }

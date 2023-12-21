@@ -1,6 +1,11 @@
-use crate::utils;
+const DAY: u8 = 3;
+
+pub fn main() {
+    part1();
+    part2();
+}
+
 use std::fmt;
-use std::io::BufRead;
 
 #[derive(Debug, Default)]
 struct Symbol {
@@ -42,7 +47,6 @@ impl Symbol {
 impl PartNumber {
     fn is_adjacent_to(self: &PartNumber, pos: &Symbol) -> bool {
         // Adjacent means that all of these must be true:
-
         (pos.x >= self.left_bound && pos.x <= self.right_bound)
             && (pos.y >= self.lower_bound && pos.y <= self.top_bound)
     }
@@ -59,22 +63,16 @@ impl fmt::Display for PartNumber {
 }
 
 fn find_numbers_and_symbols() -> (Vec<PartNumber>, Vec<Symbol>) {
-    let reader = utils::get_reader_for_day(3);
     let mut curr_num = String::new();
     let mut in_num = false;
     let mut nums: Vec<PartNumber> = Vec::new();
     let mut syms: Vec<Symbol> = Vec::new();
     let mut curr_part = PartNumber::default();
 
-    let input_data: Vec<Vec<char>> = reader
-        .lines()
-        .map(|l| l.unwrap().chars().collect())
-        .collect();
-
-    for (line_no, line) in input_data.iter().enumerate() {
-        for (col_no, our_char) in line.iter().enumerate() {
+    for (line_no, line) in crate::utils::lines(DAY).enumerate() {
+        for (col_no, our_char) in line.chars().enumerate() {
             if our_char.is_ascii_digit() {
-                curr_num.push(*our_char);
+                curr_num.push(our_char);
 
                 if !in_num {
                     in_num = true;
@@ -107,7 +105,7 @@ fn find_numbers_and_symbols() -> (Vec<PartNumber>, Vec<Symbol>) {
                 in_num = false;
             }
 
-            if *our_char == '.' {
+            if our_char == '.' {
                 continue;
             }
 
@@ -133,7 +131,7 @@ fn find_numbers_and_symbols() -> (Vec<PartNumber>, Vec<Symbol>) {
     (nums, syms)
 }
 
-fn day3_part2() {
+fn part2() {
     let mut our_sum: u128 = 0;
 
     let (nums, syms) = find_numbers_and_symbols();
@@ -142,11 +140,11 @@ fn day3_part2() {
         our_sum += sym.get_gear_ratio(&nums);
     }
 
-    println!("Day  3, part 2 = {}", our_sum);
     // 81296995
+    done!(DAY, 2, our_sum);
 }
 
-fn day3_part1() {
+fn part1() {
     let mut our_sum: u128 = 0;
 
     let (nums, syms) = find_numbers_and_symbols();
@@ -156,10 +154,5 @@ fn day3_part1() {
             our_sum += num.number as u128;
         }
     }
-    println!("Day  3, part 1 = {}", our_sum);
-}
-
-pub fn day3() {
-    day3_part1();
-    day3_part2();
+    done!(DAY, 1, our_sum);
 }

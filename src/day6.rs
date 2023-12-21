@@ -1,3 +1,10 @@
+const DAY: u8 = 6;
+
+pub fn main() {
+    part1();
+    part2();
+}
+
 #[derive(Debug)]
 struct Race {
     max_time: i128,
@@ -106,7 +113,7 @@ fn sneaky_ways_to_win(r: &Race) -> u128 {
     ways_to_win as u128
 }
 
-fn day6_part1() {
+fn part1() {
     let races = get_races();
 
     let margin = races
@@ -115,20 +122,14 @@ fn day6_part1() {
         .reduce(|acc, e| acc * e)
         .unwrap();
 
-    println!("Day  6, part 1 = {}", margin);
+    done!(DAY, 1, margin);
 }
 
-fn day6_part2() {
-    println!(
-        "Day  6, part 2 = {}",
+fn part2() {
+    done!(DAY, 2,
         sneaky_ways_to_win(&Race {
             max_time: 56717999,
             max_dist: 334113513502430
         })
     );
-}
-
-pub fn day6() {
-    day6_part1();
-    day6_part2();
 }
