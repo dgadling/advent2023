@@ -16,6 +16,7 @@ pub mod day6;
 pub mod day7;
 pub mod day8;
 pub mod day9;
+pub mod day10;
 
 fn main() {
     vec![
@@ -28,5 +29,6 @@ fn main() {
     day7::main,
     day8::main,
     day9::main,
+    day10::main,
     ].last().unwrap()()
 }
